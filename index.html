@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IncidentMind</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f5f8;
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: linear-gradient(135deg, #18243b, #263b60);
+            color: white;
+            text-align: center;
+            padding: 45px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 42px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 12px 0 0;
+            font-size: 17px;
+            color: #d9e2f1;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1150px;
+            margin: 35px auto 70px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #17233d;
+        }
+
+        /* ================= TEXTAREA ================= */
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            padding: 18px;
+            border: 1px solid #ccd4df;
+            border-radius: 10px;
+            font-size: 16px;
+            line-height: 1.6;
+            outline: none;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        textarea:focus,
+        input:focus {
+            border-color: #1689e8;
+            box-shadow: 0 0 0 3px rgba(22, 137, 232, 0.12);
+        }
+
+        /* ================= CHECKBOX ================= */
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkbox-row input {
+            width: 19px;
+            height: 19px;
+            cursor: pointer;
+            accent-color: #1689e8;
+        }
+
+        /* ================= BUTTON ================= */
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #1689e8, #1477d4);
+            color: white;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(20, 119, 212, 0.25);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: wait;
+            transform: none;
+        }
+
+        /* ================= LOADING ================= */
+
+        #loading {
+            display: none;
+            text-align: center;
+            padding: 25px;
+            color: #1689e8;
+            font-weight: bold;
+        }
+
+        .spinner {
+            width: 25px;
+            height: 25px;
+            border: 3px solid #dcecff;
+            border-top: 3px solid #1689e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ================= ANALYSIS ================= */
+
+        #analysisSection {
+            display: none;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #eef1f5;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #164b91;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: #4e5969;
+        }
+
+        .analysis-content {
+            border-left: 6px solid #1689e8;
+            background: #fafcff;
+            padding: 25px;
+            border-radius: 5px;
+            line-height: 1.7;
+        }
+
+        .analysis-content h3 {
+            color: #17233d;
+            margin-top: 20px;
+            margin-bottom: 7px;
+        }
+
+        .analysis-content h3:first-child {
+            margin-top: 0;
+        }
+
+        /* ================= HISTORY ================= */
+
+        #historySection {
+            display: none;
+        }
+
+        .incident-card {
+            background: white;
+            border: 1px solid #dfe5ec;
+            border-radius: 13px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .incident-card h3 {
+            margin-top: 0;
+            color: #174b91;
+        }
+
+        .incident-description {
+            line-height: 1.65;
+            color: #343e4d;
+        }
+
+        .meta {
+            margin-top: 18px;
+            line-height: 1.8;
+            color: #4f5968;
+        }
+
+        .badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .badge {
+            background: #e9f3ff;
+            color: #175493;
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .resolution {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e5eb;
+        }
+
+        .resolution strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* ================= FEEDBACK ================= */
+
+        #feedbackSection {
+            display: none;
+        }
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .feedback-grid input,
+        .feedback-grid textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccd4df;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .feedback-grid textarea {
+            min-height: 110px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        #feedbackMessage {
+            display: none;
+            margin-top: 15px;
+            padding: 13px;
+            border-radius: 8px;
+            background: #e8f7ed;
+            color: #176b36;
+            font-weight: bold;
+        }
+
+        /* ================= ERROR ================= */
+
+        #errorMessage {
+            display: none;
+            background: #fff0f0;
+            color: #a32121;
+            border: 1px solid #f0b5b5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .analysis-grid,
+            .feedback-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>IncidentMind</h1>
+    <p>AI-Powered Infrastructure Incident Memory &amp; Analysis</p>
+</header>
+
+<main class="container">
+
+    <!-- ================= REPORT INCIDENT ================= -->
+
+    <section class="card">
+
+        <h2>Report an Incident</h2>
+
+        <textarea id="incidentInput"
+            placeholder="Describe the incident...">The payment API is returning HTTP 500 errors after a production deployment.</textarea>
+
+        <label class="checkbox-row">
+            <input type="checkbox" id="useMemory" checked>
+            <span>Use historical incident memory</span>
+        </label>
+
+        <button type="button" id="analyzeButton">
+            Analyze Incident
+        </button>
+
+        <div id="loading">
+            <span class="spinner"></span>
+            Analyzing incident and searching historical memory...
+        </div>
+
+        <div id="errorMessage"></div>
+
+    </section>
+
+
+    <!-- ================= ANALYSIS ================= -->
+
+    <section class="card" id="analysisSection">
+
+        <h2>Incident Analysis</h2>
+
+        <div class="analysis-grid">
+
+            <div class="stat-box">
+                <div class="stat-value" id="memoryUsed">
+                    YES
+                </div>
+                <div class="stat-label">
+                    Memory Used
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-value" id="similarCount">
+                    5
+                </div>
+                <div class="stat-label">
+                    Similar Incidents
+                </div>
+            </div>
+
+        </div>
+
+        <div class="analysis-content">
+
+            <h3>Probable Root Cause:</h3>
+            <div id="rootCause">
+                A similar historical incident was found in IncidentMind memory.
+            </div>
+
+            <h3>Recommended Fix:</h3>
+            <div id="recommendedFix">
+                Review the historical incident below and compare its root cause
+                and fix with the current incident.
+            </div>
+
+            <h3>Historical Evidence:</h3>
+            <div id="historicalEvidence">
+                The Payment API experienced HTTP 500 errors following a bad
+                production deployment, which was resolved by rolling back to
+                the previous stable version.
+            </div>
+
+            <h3>Post-Incident Investigation:</h3>
+            <div id="investigation">
+                Check application logs, deployment history, CPU and memory usage,
+                database health, disk usage, and recent configuration changes.
+            </div>
+
+            <h3>Prevention:</h3>
+            <div id="prevention">
+                Add monitoring, alert thresholds, health checks, and automated
+                incident detection for this failure pattern.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HISTORICAL INCIDENTS ================= -->
+
+    <section class="card" id="historySection">
+
+        <h2>Historical Incidents</h2>
+
+        <div id="historyContainer"></div>
+
+    </section>
+
+
+    <!-- ================= FEEDBACK ================= -->
+
+    <section class="card" id="feedbackSection">
+
+        <h2>Incident Resolution Feedback</h2>
+
+        <div class="feedback-grid">
+
+            <input
+                type="text"
+                id="actualRootCause"
+                placeholder="Actual root cause"
+            >
+
+            <input
+                type="text"
+                id="actualFix"
+                placeholder="Actual fix"
+            >
+
+            <input
+                type="text"
+                id="resolutionTime"
+                placeholder="Resolution time"
+            >
+
+            <input
+                type="text"
+                id="feedback"
+                placeholder="Feedback"
+            >
+
+            <div class="full">
+                <button type="button" id="saveFeedbackButton">
+                    Save Resolution Feedback
+                </button>
+            </div>
+
+        </div>
+
+        <div id="feedbackMessage">
+            Resolution feedback saved successfully.
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+    /* =========================================================
+       INCIDENTMIND FRONTEND
+       This file works independently with demo historical data.
+       ========================================================= */
+
+    const API_URL = "http://127.0.0.1:8000";
+
+
+    /* =========================================================
+       DEMO HISTORICAL INCIDENTS
+       ========================================================= */
+
+    const historicalIncidents = [
+
+        {
+            title: "Similar Incident 1",
+
+            description:
+                "The Payment API experienced HTTP 500 errors on 2026-09-28 following a bad production deployment, which was resolved by rolling back to the previous stable version.",
+
+            timestamp:
+                "2026-09-28T12:18:55.882599+00:00",
+
+            type:
+                "observation",
+
+            similarity:
+                "89.6%",
+
+            confidence:
+                "1.1%",
+
+            resolution:
+                "Rollback to the previous stable version."
+        },
+
+        {
+            title: "Similar Incident 2",
+
+            description:
+                "Payment API experienced HTTP 500 errors following a new deployment. | When: 2026-09-28 | Bad production deployment",
+
+            timestamp:
+                "2026-09-28T12:18:55.872599+00:00",
+
+            type:
+                "world",
+
+            similarity:
+                "90.8%",
+
+            confidence:
+                "1.1%",
+
+            resolution:
+                "Review the deployment and compare with the previous stable version."
+        },
+
+        {
+            title: "Similar Incident 3",
+
+            description:
+                "Rolled back Payment API to the previous stable version to resolve HTTP 500 errors. | When: 2026-09-28",
+
+            timestamp:
+                "2026-09-28T12:18:55.882599+00:00",
+
+            type:
+                "world",
+
+            similarity:
+                "84.3%",
+
+            confidence:
+                "91.7%",
+
+            resolution:
+                "Rollback Payment API to the previous stable version."
+        },
+
+        {
+            title: "Similar Incident 4",
+
+            description:
+                "Inventory Service API returned server errors following a new deployment. | When: 2026-09-28 | Incorrect environment variable in deployment",
+
+            timestamp:
+                "2026-09-28T12:19:12.171334+00:00",
+
+            type:
+                "world",
+
+            similarity:
+                "72.8%",
+
+            confidence:
+                "2.7%",
+
+            resolution:
+                "Correct the environment variable and redeploy."
+        },
+
+        {
+            title: "Similar Incident 5",
+
+            description:
+                "The login failure was caused by an incorrect configuration introduced during the deployment.",
+
+            timestamp:
+                "2026-09-28T12:18:57.880625+00:00",
+
+            type:
+                "world",
+
+            similarity:
+                "63.0%",
+
+            confidence:
+                "1.1%",
+
+            resolution:
+                "Correct the deployment configuration and redeploy."
+        }
+
+    ];
+
+
+    /* =========================================================
+       GET ELEMENTS
+       ========================================================= */
+
+    const analyzeButton =
+        document.getElementById("analyzeButton");
+
+    const incidentInput =
+        document.getElementById("incidentInput");
+
+    const useMemory =
+        document.getElementById("useMemory");
+
+    const loading =
+        document.getElementById("loading");
+
+    const errorMessage =
+        document.getElementById("errorMessage");
+
+    const analysisSection =
+        document.getElementById("analysisSection");
+
+    const historySection =
+        document.getElementById("historySection");
+
+    const feedbackSection =
+        document.getElementById("feedbackSection");
+
+    const historyContainer =
+        document.getElementById("historyContainer");
+
+    const memoryUsed =
+        document.getElementById("memoryUsed");
+
+    const similarCount =
+        document.getElementById("similarCount");
+
+    const rootCause =
+        document.getElementById("rootCause");
+
+    const recommendedFix =
+        document.getElementById("recommendedFix");
+
+    const historicalEvidence =
+        document.getElementById("historicalEvidence");
+
+    const investigation =
+        document.getElementById("investigation");
+
+    const prevention =
+        document.getElementById("prevention");
+
+    const saveFeedbackButton =
+        document.getElementById("saveFeedbackButton");
+
+    const feedbackMessage =
+        document.getElementById("feedbackMessage");
+
+
+    /* =========================================================
+       ANALYZE BUTTON
+       ========================================================= */
+
+    analyzeButton.addEventListener("click", analyzeIncident);
+
+
+    async function analyzeIncident() {
+
+        const incidentText =
+            incidentInput.value.trim();
+
+        /* Do not allow empty incident */
+        if (incidentText === "") {
+
+            showError(
+                "Please enter an incident description before analyzing."
+            );
+
+            incidentInput.focus();
+
+            return;
+        }
+
+
+        /* Clear old error */
+        hideError();
+
+
+        /* Button loading state */
+        analyzeButton.disabled = true;
+
+        analyzeButton.textContent = "Analyzing...";
+
+        loading.style.display = "block";
+
+
+        /*
+         * First try the backend.
+         * If backend is unavailable, the frontend automatically
+         * uses the demo data below.
+         */
+
+        let backendData = null;
+
+        try {
+
+            const response = await fetch(
+                API_URL + "/analyze",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        incident: incidentText,
+                        use_memory: useMemory.checked
+                    })
+                }
+            );
+
+
+            if (response.ok) {
+
+                backendData =
+                    await response.json();
+
+            }
+
+        } catch (error) {
+
+            /*
+             * Backend unavailable.
+             * This is intentionally ignored because the
+             * standalone frontend can still demonstrate the UI.
+             */
+
+            backendData = null;
+        }
+
+
+        /* Stop loading */
+        loading.style.display = "none";
+
+        analyzeButton.disabled = false;
+
+        analyzeButton.textContent = "Analyze Incident";
+
+
+        /* Display result */
+        if (backendData) {
+
+            displayBackendResult(backendData);
+
+        } else {
+
+            displayDemoResult(incidentText);
+        }
+
+
+        /* Scroll to analysis */
+        setTimeout(function () {
+
+            analysisSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 100);
+    }
+
+
+    /* =========================================================
+       DEMO RESULT
+       ========================================================= */
+
+    function displayDemoResult(incidentText) {
+
+        const memory =
+            useMemory.checked;
+
+
+        /* Memory status */
+
+        memoryUsed.textContent =
+            memory ? "YES" : "NO";
+
+
+        /* Number of similar incidents */
+
+        similarCount.textContent =
+            memory ? historicalIncidents.length : "0";
+
+
+        if (memory) {
+
+            /*
+             * Use historical evidence to generate
+             * a simple demo analysis.
+             */
+
+            rootCause.textContent =
+                "A similar historical incident was found in IncidentMind memory. The failure pattern is consistent with a production deployment issue affecting the Payment API.";
+
+
+            recommendedFix.textContent =
+                "Review the deployment changes and, if the current deployment introduced the failure, roll back to the previous stable version. Verify the service after rollback.";
+
+
+            historicalEvidence.textContent =
+                "The Payment API experienced HTTP 500 errors on 2026-09-28 following a bad production deployment, which was resolved by rolling back to the previous stable version.";
+
+
+            investigation.textContent =
+                "Check application logs, deployment history, CPU and memory usage, database health, disk usage, environment variables, and recent configuration changes.";
+
+
+            prevention.textContent =
+                "Add deployment health checks, monitoring, alert thresholds, automated rollback conditions, and incident detection for recurring HTTP 500 failure patterns.";
+
+        } else {
+
+            rootCause.textContent =
+                "Historical incident memory was not used. A root cause cannot be determined from the incident description alone.";
+
+
+            recommendedFix.textContent =
+                "Investigate application logs, deployment changes, service health, configuration, and database connectivity before applying a fix.";
+
+
+            historicalEvidence.textContent =
+                "No historical evidence was requested for this analysis.";
+
+
+            investigation.textContent =
+                "Check application logs, deployment history, CPU and memory usage, database health, disk usage, environment variables, and recent configuration changes.";
+
+
+            prevention.textContent =
+                "Configure monitoring, health checks, alert thresholds, and deployment validation.";
+
+        }
+
+
+        /* Show sections */
+
+        analysisSection.style.display = "block";
+
+
+        if (memory) {
+
+            renderHistoricalIncidents();
+
+            historySection.style.display = "block";
+
+            feedbackSection.style.display = "block";
+
+        } else {
+
+            historyContainer.innerHTML = "";
+
+            historySection.style.display = "none";
+
+            feedbackSection.style.display = "block";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       RENDER HISTORICAL INCIDENTS
+       ========================================================= */
+
+    function renderHistoricalIncidents() {
+
+        historyContainer.innerHTML = "";
+
+
+        historicalIncidents.forEach(function (incident, index) {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "incident-card";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    ${escapeHtml(incident.title)}
+                </h3>
+
+                <div class="incident-description">
+                    ${escapeHtml(incident.description)}
+                </div>
+
+                <div class="meta">
+
+                    <strong>Timestamp:</strong>
+                    ${escapeHtml(incident.timestamp)}
+
+                    <br>
+
+                    <strong>Type:</strong>
+                    ${escapeHtml(incident.type)}
+
+                </div>
+
+                <div class="badges">
+
+                    <span class="badge">
+                        Similarity: ${escapeHtml(incident.similarity)}
+                    </span>
+
+                    <span class="badge">
+                        Confidence: ${escapeHtml(incident.confidence)}
+                    </span>
+
+                </div>
+
+                <div class="resolution">
+
+                    <strong>
+                        Resolution Details
+                    </strong>
+
+                    <div>
+                        ${escapeHtml(incident.resolution)}
+                    </div>
+
+                </div>
+            `;
+
+
+            historyContainer.appendChild(card);
+
+        });
+
+    }
+
+
+    /* =========================================================
+       BACKEND RESULT
+       ========================================================= */
+
+    function displayBackendResult(data) {
+
+        /*
+         * The exact response structure can differ depending
+         * on your FastAPI/Hindsight implementation.
+         *
+         * This function safely checks multiple common names.
+         */
+
+        memoryUsed.textContent =
+            data.memory_used === false ? "NO" : "YES";
+
+
+        const incidents =
+            data.similar_incidents ||
+            data.similar_memories ||
+            data.memories ||
+            data.results ||
+            historicalIncidents;
+
+
+        similarCount.textContent =
+            Array.isArray(incidents)
+                ? incidents.length
+                : 5;
+
+
+        rootCause.textContent =
+            data.root_cause ||
+            data.probable_root_cause ||
+            "A similar historical incident was found in IncidentMind memory.";
+
+
+        recommendedFix.textContent =
+            data.recommended_fix ||
+            data.fix ||
+            "Review the historical incident and compare its root cause and resolution with the current incident.";
+
+
+        historicalEvidence.textContent =
+            data.historical_evidence ||
+            "Historical incident evidence was retrieved from IncidentMind memory.";
+
+
+        investigation.textContent =
+            data.investigation ||
+            "Check application logs, deployment history, CPU and memory usage, database health, disk usage, and recent configuration changes.";
+
+
+        prevention.textContent =
+            data.prevention ||
+            "Add monitoring, health checks, alert thresholds, and automated incident detection.";
+
+
+        analysisSection.style.display =
+            "block";
+
+
+        /*
+         * If backend supplied incidents,
+         * render them. Otherwise use demo records.
+         */
+
+        if (Array.isArray(incidents) && incidents.length > 0) {
+
+            renderBackendIncidents(incidents);
+
+            historySection.style.display =
+                "block";
+
+        } else {
+
+            renderHistoricalIncidents();
+
+            historySection.style.display =
+                "block";
+        }
+
+
+        feedbackSection.style.display =
+            "block";
+
+    }
+
+
+    /* =========================================================
+       RENDER BACKEND INCIDENTS
+       ========================================================= */
+
+    function renderBackendIncidents(incidents) {
+
+        historyContainer.innerHTML = "";
+
+
+        incidents.forEach(function (item, index) {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "incident-card";
+
+
+            const description =
+                item.description ||
+                item.content ||
+                item.text ||
+                item.incident ||
+                "Historical incident record";
+
+
+            const timestamp =
+                item.timestamp ||
+                item.created_at ||
+                item.when ||
+                "Not available";
+
+
+            const type =
+                item.type ||
+                "historical";
+
+
+            let similarity =
+                item.similarity ??
+                item.score ??
+                item.similarity_score;
+
+
+            let confidence =
+                item.confidence ??
+                item.confidence_score;
+
+
+            if (typeof similarity === "number") {
+
+                similarity =
+                    formatPercentage(similarity);
+
+            }
+
+
+            if (typeof confidence === "number") {
+
+                confidence =
+                    formatPercentage(confidence);
+
+            }
+
+
+            similarity =
+                similarity || "N/A";
+
+
+            confidence =
+                confidence || "N/A";
+
+
+            const resolution =
+                item.resolution ||
+                item.fix ||
+                item.resolution_details ||
+                item.metadata?.resolution ||
+                "No metadata available.";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    Similar Incident ${index + 1}
+                </h3>
+
+                <div class="incident-description">
+                    ${escapeHtml(String(description))}
+                </div>
+
+                <div class="meta">
+
+                    <strong>Timestamp:</strong>
+                    ${escapeHtml(String(timestamp))}
+
+                    <br>
+
+                    <strong>Type:</strong>
+                    ${escapeHtml(String(type))}
+
+                </div>
+
+                <div class="badges">
+
+                    <span class="badge">
+                        Similarity: ${escapeHtml(String(similarity))}
+                    </span>
+
+                    <span class="badge">
+                        Confidence: ${escapeHtml(String(confidence))}
+                    </span>
+
+                </div>
+
+                <div class="resolution">
+
+                    <strong>
+                        Resolution Details
+                    </strong>
+
+                    <div>
+                        ${escapeHtml(String(resolution))}
+                    </div>
+
+                </div>
+            `;
+
+
+            historyContainer.appendChild(card);
+
+        });
+
+    }
+
+
+    /* =========================================================
+       SAVE FEEDBACK
+       ========================================================= */
+
+    saveFeedbackButton.addEventListener(
+        "click",
+        saveFeedback
+    );
+
+
+    async function saveFeedback() {
+
+        const actualRootCause =
+            document.getElementById(
+                "actualRootCause"
+            ).value.trim();
+
+
+        const actualFix =
+            document.getElementById(
+                "actualFix"
+            ).value.trim();
+
+
+        const resolutionTime =
+            document.getElementById(
+                "resolutionTime"
+            ).value.trim();
+
+
+        const feedback =
+            document.getElementById(
+                "feedback"
+            ).value.trim();
+
+
+        if (
+            actualRootCause === "" &&
+            actualFix === "" &&
+            resolutionTime === "" &&
+            feedback === ""
+        ) {
+
+            feedbackMessage.style.display =
+                "block";
+
+            feedbackMessage.style.background =
+                "#fff4df";
+
+            feedbackMessage.style.color =
+                "#7a4b00";
+
+            feedbackMessage.textContent =
+                "Please enter at least one feedback field.";
+
+            return;
+        }
+
+
+        saveFeedbackButton.disabled =
+            true;
+
+        saveFeedbackButton.textContent =
+            "Saving...";
+
+
+        /*
+         * Try backend first.
+         */
+
+        try {
+
+            await fetch(
+                API_URL + "/feedback",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        actual_root_cause:
+                            actualRootCause,
+
+                        actual_fix:
+                            actualFix,
+
+                        resolution_time:
+                            resolutionTime,
+
+                        feedback:
+                            feedback
+
+                    })
+                }
+            );
+
+        } catch (error) {
+
+            /*
+             * Backend is optional for this standalone demo.
+             */
+        }
+
+
+        saveFeedbackButton.disabled =
+            false;
+
+        saveFeedbackButton.textContent =
+            "Save Resolution Feedback";
+
+
+        feedbackMessage.style.display =
+            "block";
+
+        feedbackMessage.style.background =
+            "#e8f7ed";
+
+        feedbackMessage.style.color =
+            "#176b36";
+
+        feedbackMessage.textContent =
+            "Resolution feedback saved successfully.";
+
+    }
+
+
+    /* =========================================================
+       ERROR
+       ========================================================= */
+
+    function showError(message) {
+
+        errorMessage.textContent =
+            message;
+
+        errorMessage.style.display =
+            "block";
+
+    }
+
+
+    function hideError() {
+
+        errorMessage.textContent =
+            "";
+
+        errorMessage.style.display =
+            "none";
+
+    }
+
+
+    /* =========================================================
+       PERCENTAGE FORMAT
+       ========================================================= */
+
+    function formatPercentage(value) {
+
+        /*
+         * If value is between 0 and 1,
+         * treat it as a decimal score.
+         */
+
+        if (value >= 0 && value <= 1) {
+
+            return (value * 100).toFixed(1) + "%";
+
+        }
+
+        return Number(value).toFixed(1) + "%";
+
+    }
+
+
+    /* =========================================================
+       SECURITY / HTML ESCAPING
+       ========================================================= */
+
+    function escapeHtml(value) {
+
+        return value
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+</script>
+
+</body>
+</html>
